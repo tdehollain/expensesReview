@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
 import { useTheme } from "next-themes";
 import { Separator } from "@radix-ui/react-separator";
+import FileUploader from "@/components/FileUploader";
 
 // import xml2js from 'xml2js';
 const xml2js = require("xml2js");
@@ -57,6 +58,8 @@ export default function Home() {
   }, [file]);
 
   const readFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("HERE");
+
     const file = event.currentTarget.files?.item(0);
     if (file) setFile(file);
   };
@@ -64,7 +67,7 @@ export default function Home() {
   return (
     <div>
       <nav className="w-full p-4 px-8 flex justify-between">
-        <h1>Expenses</h1>
+        <h1 className="font-bold">Expenses</h1>
         <Button size="icon" variant={"outline"} onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
           <SunIcon className="w-4 h-4 transition-all scale-0 dark:scale-100"></SunIcon>
           <MoonIcon className="absolute w-4 h-4 transition-all scale-100 dark:scale-0"></MoonIcon>
@@ -73,36 +76,41 @@ export default function Home() {
       <Separator className="my-4" />
       <main className="flex min-h-screen flex-col items-center justify-between p-24">
         <div className="grid w-full max-w-screen-xl items-center gap-1.5">
-          <section className="w-40 mb-5">
-            <Label htmlFor="inputFile">XML file</Label>
-            <Input id="inputFile" type="file" accept="xml" onChange={readFile} />
+          <section className="w-[400px] mb-5">
+            <FileUploader />
           </section>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-24">Date</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Address</TableHead>
-                <TableHead>Country</TableHead>
-                <TableHead>IBAN</TableHead>
-                <TableHead>Communication</TableHead>
-                <TableHead>Amount</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {statements.map((entry) => (
-                <TableRow key={entry.id} className="text-xs">
-                  <TableCell>{entry.date}</TableCell>
-                  <TableCell>{entry.party.name}</TableCell>
-                  <TableCell>{entry.party.address}</TableCell>
-                  <TableCell>{entry.party.country}</TableCell>
-                  <TableCell>{entry.party.IBAN}</TableCell>
-                  <TableCell>{entry.communication}</TableCell>
-                  <TableCell className="w-24 text-right">{(entry.isDebit ? "-" : "+") + entry.amount + " EUR"}</TableCell>
+          <section>
+            <h1 className="font-semibold">Summary</h1>
+          </section>
+          <section>
+            <h1 className="font-semibold">List of Expenses</h1>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-24">Date</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Address</TableHead>
+                  <TableHead>Country</TableHead>
+                  <TableHead>IBAN</TableHead>
+                  <TableHead>Communication</TableHead>
+                  <TableHead>Amount</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {statements.map((entry) => (
+                  <TableRow key={entry.id} className="text-xs">
+                    <TableCell>{entry.date}</TableCell>
+                    <TableCell>{entry.party.name}</TableCell>
+                    <TableCell>{entry.party.address}</TableCell>
+                    <TableCell>{entry.party.country}</TableCell>
+                    <TableCell>{entry.party.IBAN}</TableCell>
+                    <TableCell>{entry.communication}</TableCell>
+                    <TableCell className="w-24 text-right">{(entry.isDebit ? "-" : "+") + entry.amount + " EUR"}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </section>
         </div>
       </main>
     </div>
